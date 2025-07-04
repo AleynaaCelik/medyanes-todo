@@ -1,12 +1,22 @@
 "use client"
 
 import { useState } from 'react'
+import { useTodoStore } from '../store/todoStore'
 
 export default function AddTodoForm() {
   const [title, setTitle] = useState('')
+  const addTodo = useTodoStore((state) => state.addTodo)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (title.trim()) {
+      addTodo(title.trim())
+      setTitle('')
+    }
+  }
 
   return (
-    <form className="mb-6">
+    <form onSubmit={handleSubmit} className="mb-6">
       <div className="flex gap-2">
         <input
           type="text"
