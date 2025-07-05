@@ -1,9 +1,24 @@
 "use client"
 
+import { useEffect } from 'react'
 import { useTodoStore } from '../store/todoStore'
 
 export default function TodoList() {
-  const { todos, toggleTodo, deleteTodo } = useTodoStore()
+  const { todos, loading, fetchTodos, toggleTodo, deleteTodo } = useTodoStore()
+
+  // Sayfa yüklendiğinde todo'ları getir
+  useEffect(() => {
+    fetchTodos()
+  }, [fetchTodos])
+
+  if (loading) {
+    return (
+      <div className="space-y-2">
+        <h2 className="text-xl font-semibold mb-4">Todo Listesi</h2>
+        <p className="text-gray-500 text-center py-8">Yükleniyor...</p>
+      </div>
+    )
+  }
 
   if (todos.length === 0) {
     return (
@@ -21,7 +36,7 @@ export default function TodoList() {
       {todos.map((todo) => (
         <div
           key={todo.id}
-          className={`flex items-center gap-3 p-3 border rounded-lg ${
+          className={`flex items-center gap-3 p-3 border rounded-lg transition-colors ${
             todo.completed ? 'bg-gray-50 border-gray-200' : 'bg-white border-gray-300'
           }`}
         >
@@ -45,6 +60,7 @@ export default function TodoList() {
           <button
             onClick={() => deleteTodo(todo.id)}
             className="px-2 py-1 text-red-600 hover:bg-red-50 rounded transition-colors"
+            disabled={loading}
           >
             🗑️
           </button>
