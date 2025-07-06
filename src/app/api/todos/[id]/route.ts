@@ -5,9 +5,10 @@ import { prisma } from '../../../lib/prisma'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params  // params artık Promise!
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
@@ -24,7 +25,7 @@ export async function GET(
 
     const todo = await prisma.todo.findFirst({
       where: { 
-        id: params.id,
+        id: id,
         userId: user.id
       }
     })
@@ -34,16 +35,17 @@ export async function GET(
     }
     
     return NextResponse.json(todo)
-  } catch {  // error parametresini kaldırdık
+  } catch {
     return NextResponse.json({ error: 'Todo getirilemedi' }, { status: 500 })
   }
 }
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params  // params artık Promise!
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
@@ -62,7 +64,7 @@ export async function PUT(
     
     const todo = await prisma.todo.updateMany({
       where: { 
-        id: params.id,
+        id: id,
         userId: user.id
       },
       data: { 
@@ -76,20 +78,21 @@ export async function PUT(
     }
 
     const updatedTodo = await prisma.todo.findFirst({
-      where: { id: params.id, userId: user.id }
+      where: { id: id, userId: user.id }
     })
     
     return NextResponse.json(updatedTodo)
-  } catch {  // error parametresini kaldırdık
+  } catch {
     return NextResponse.json({ error: 'Todo güncellenemedi' }, { status: 500 })
   }
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params  // params artık Promise!
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
@@ -106,7 +109,7 @@ export async function DELETE(
 
     const result = await prisma.todo.deleteMany({
       where: { 
-        id: params.id,
+        id: id,
         userId: user.id
       }
     })
@@ -116,7 +119,7 @@ export async function DELETE(
     }
     
     return NextResponse.json({ message: 'Todo silindi' })
-  } catch {  // error parametresini kaldırdık
+  } catch {
     return NextResponse.json({ error: 'Todo silinemedi' }, { status: 500 })
   }
 }
