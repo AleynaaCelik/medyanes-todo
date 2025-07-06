@@ -18,7 +18,9 @@ export default function AddTodoForm() {
   })
 
   const onSubmit = async (data: TodoFormData) => {
+    console.log('Form submit:', data.title) // Debug
     await addTodo(data.title)
+    console.log('Todo eklendi') // Debug
     reset()
   }
 

@@ -1,11 +1,17 @@
 import { create } from 'zustand'
-import { Todo } from '../types/todo'
+
+interface Todo {
+  id: string
+  title: string
+  completed: boolean
+  createdAt: Date
+  updatedAt: Date
+}
 
 interface TodoStore {
   todos: Todo[]
   loading: boolean
   
-  // API ile çalışan metodlar
   fetchTodos: () => Promise<void>
   addTodo: (title: string) => Promise<void>
   toggleTodo: (id: string) => Promise<void>
@@ -23,16 +29,21 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
     set({ loading: true })
     try {
       const response = await fetch('/api/todos')
-      const todos = await response.json()
-      set({ todos })
+      if (response.ok) {
+        const todos = await response.json()
+        set({ todos })
+      } else {
+        console.error('Fetch error:', response.status)
+      }
     } catch (error) {
-      console.error('Todolar yüklenemedi:', error)
+      console.error('Fetch todos error:', error)
     } finally {
       set({ loading: false })
     }
   },
 
   addTodo: async (title: string) => {
+    console.log('Store addTodo called with:', title) // Debug
     try {
       const response = await fetch('/api/todos', {
         method: 'POST',
@@ -40,45 +51,38 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
         body: JSON.stringify({ title })
       })
       
+      console.log('Response status:', response.status) // Debug
+      
       if (response.ok) {
-        // Todoları yeniden yükle
-        await get().fetchTodos()
+        const newTodo = await response.json()
+        console.log('New todo received:', newTodo) // Debug
+        
+        set((state) => {
+          const updatedTodos = [newTodo, ...state.todos]
+          console.log('Updated todos:', updatedTodos) // Debug
+          return { todos: updatedTodos }
+        })
+      } else {
+        console.error('Add todo error:', response.status)
       }
     } catch (error) {
-      console.error('Todo eklenemedi:', error)
+      console.error('Add todo error:', error)
     }
   },
 
   toggleTodo: async (id: string) => {
-    const todo = get().todos.find(t => t.id === id)
-    if (!todo) return
-
-    try {
-      const response = await fetch(`/api/todos/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ completed: !todo.completed })
-      })
-      
-      if (response.ok) {
-        await get().fetchTodos()
-      }
-    } catch (error) {
-      console.error('Todo güncellenemedi:', error)
-    }
+    // Şimdilik local state'te toggle et
+    set((state) => ({
+      todos: state.todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    }))
   },
 
   deleteTodo: async (id: string) => {
-    try {
-      const response = await fetch(`/api/todos/${id}`, {
-        method: 'DELETE'
-      })
-      
-      if (response.ok) {
-        await get().fetchTodos()
-      }
-    } catch (error) {
-      console.error('Todo silinemedi:', error)
-    }
+    // Şimdilik local state'ten sil
+    set((state) => ({
+      todos: state.todos.filter((todo) => todo.id !== id)
+    }))
   }
 }))
