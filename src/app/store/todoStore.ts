@@ -13,6 +13,8 @@ interface TodoStore {
   loading: boolean
   addTodo: (title: string) => Promise<void>
   fetchTodos: () => Promise<void>
+  toggleTodo: (id: string) => Promise<void>
+  deleteTodo: (id: string) => Promise<void>
 }
 
 export const useTodoStore = create<TodoStore>((set, get) => ({
@@ -20,21 +22,21 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
   loading: false,
 
   fetchTodos: async () => {
-    console.log('🔍 fetchTodos called') // Debug
+    set({ loading: true })
     try {
       const response = await fetch('/api/todos')
       if (response.ok) {
         const todos = await response.json()
-        console.log('🔍 Fetched todos:', todos) // Debug
         set({ todos })
       }
     } catch (error) {
       console.error('Fetch error:', error)
+    } finally {
+      set({ loading: false })
     }
   },
 
   addTodo: async (title: string) => {
-    console.log('🔍 addTodo called:', title) // Debug
     try {
       const response = await fetch('/api/todos', {
         method: 'POST',
@@ -43,12 +45,24 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
       })
       
       if (response.ok) {
-        console.log('🔍 Todo added, re-fetching...') // Debug
-        // Basit çözüm: tüm todo'ları yeniden getir
         await get().fetchTodos()
       }
     } catch (error) {
       console.error('Add todo error:', error)
     }
+  },
+
+  toggleTodo: async (id: string) => {
+    set((state) => ({
+      todos: state.todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    }))
+  },
+
+  deleteTodo: async (id: string) => {
+    set((state) => ({
+      todos: state.todos.filter((todo) => todo.id !== id)
+    }))
   }
 }))

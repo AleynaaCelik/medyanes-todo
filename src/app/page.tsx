@@ -33,7 +33,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-10">
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
@@ -60,7 +59,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="container mx-auto max-w-2xl px-6 py-8">
         <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-8">
           <AddTodoForm />
@@ -68,7 +66,6 @@ export default function Home() {
         </div>
       </main>
       
-      {/* Footer */}
       <footer className="text-center py-6 text-gray-500 text-sm">
         Made with ❤️ for Medyanes
       </footer>

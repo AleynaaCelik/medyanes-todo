@@ -9,8 +9,6 @@ export default function AddTodoForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    alert('BASIT FORM ÇALIŞTI: ' + title) // Test için
-    
     if (title.trim()) {
       await addTodo(title.trim())
       setTitle('')
@@ -23,6 +21,11 @@ export default function AddTodoForm() {
         <div className="relative">
           <div className="relative flex items-center">
             <div className="relative flex-1">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+              </div>
               <input
                 type="text"
                 value={title}
