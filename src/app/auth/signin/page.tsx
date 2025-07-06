@@ -1,23 +1,27 @@
 "use client"
 
-import { useState } from 'react'
-import { signIn, getSession } from 'next-auth/react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { signInSchema, SignInFormData } from '../../lib/validations'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 export default function SignIn() {
-  const [email, setEmail] = useState('')
-  const [name, setName] = useState('')
-  const [loading, setLoading] = useState(false)
   const router = useRouter()
+  
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm<SignInFormData>({
+    resolver: zodResolver(signInSchema)
+  })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-
+  const onSubmit = async (data: SignInFormData) => {
     try {
       const result = await signIn('credentials', {
-        email,
-        name,
+        email: data.email,
+        name: data.name || data.email,
         redirect: false
       })
 
@@ -26,8 +30,6 @@ export default function SignIn() {
       }
     } catch (error) {
       console.error('Sign in error:', error)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -43,19 +45,24 @@ export default function SignIn() {
           </p>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Email
+              Email *
             </label>
             <input
+              {...register('email')}
               type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className={`mt-1 block w-full px-3 py-2 border rounded-md bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 ${
+                errors.email
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+              }`}
               placeholder="ornek@email.com"
             />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+            )}
           </div>
           
           <div>
@@ -63,20 +70,26 @@ export default function SignIn() {
               İsim
             </label>
             <input
+              {...register('name')}
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Adınız Soyadınız"
+              className={`mt-1 block w-full px-3 py-2 border rounded-md bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 ${
+                errors.name
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+              }`}
+              placeholder="Adınız Soyadınız (opsiyonel)"
             />
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+            )}
           </div>
           
           <button
             type="submit"
-            disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400"
+            disabled={isSubmitting}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 transition-colors"
           >
-            {loading ? 'Giriş yapılıyor...' : 'Giriş Yap / Kayıt Ol'}
+            {isSubmitting ? 'Giriş yapılıyor...' : 'Giriş Yap / Kayıt Ol'}
           </button>
         </form>
       </div>
