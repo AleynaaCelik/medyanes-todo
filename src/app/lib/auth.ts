@@ -2,9 +2,10 @@ import { NextAuthOptions } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { prisma } from "./prisma"
+import { Adapter } from "next-auth/adapters"
 
-export const authOptions: NextAuthOptions = {  // ← Bu satırda export var mı?
-  adapter: PrismaAdapter(prisma) as any,
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma) as Adapter,  // any yerine Adapter
   providers: [
     CredentialsProvider({
       name: "credentials",
