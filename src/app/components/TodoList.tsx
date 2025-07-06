@@ -6,9 +6,13 @@ import { useTodoStore } from '../store/todoStore'
 export default function TodoList() {
   const { todos, loading, fetchTodos, toggleTodo, deleteTodo } = useTodoStore()
 
+  console.log('🔍 TodoList render - todos:', todos) // Debug
+
   useEffect(() => {
+    console.log('🔍 useEffect - fetching todos') // Debug
     fetchTodos()
   }, [fetchTodos])
+
 
   if (loading) {
     return (
