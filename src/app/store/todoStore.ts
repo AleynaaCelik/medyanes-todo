@@ -13,8 +13,6 @@ interface TodoStore {
   loading: boolean
   addTodo: (title: string) => Promise<void>
   fetchTodos: () => Promise<void>
-  toggleTodo: (id: string) => Promise<void>
-  deleteTodo: (id: string) => Promise<void>
 }
 
 export const useTodoStore = create<TodoStore>((set, get) => ({
@@ -50,19 +48,5 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
     } catch (error) {
       console.error('Add todo error:', error)
     }
-  },
-
-  toggleTodo: async (id: string) => {
-    set((state) => ({
-      todos: state.todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    }))
-  },
-
-  deleteTodo: async (id: string) => {
-    set((state) => ({
-      todos: state.todos.filter((todo) => todo.id !== id)
-    }))
   }
 }))
