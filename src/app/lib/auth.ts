@@ -1,7 +1,11 @@
 import { NextAuthOptions } from "next-auth"
+import { PrismaAdapter } from "@auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials"
+import { prisma } from "./prisma"
+import { Adapter } from "next-auth/adapters"
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma) as Adapter,  // any yerine Adapter
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -12,11 +16,23 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email) return null
 
-        // Basit auth - database olmadan
+        let user = await prisma.user.findUnique({
+          where: { email: credentials.email }
+        })
+
+        if (!user) {
+          user = await prisma.user.create({
+            data: {
+              email: credentials.email,
+              name: credentials.name || credentials.email
+            }
+          })
+        }
+
         return {
-          id: credentials.email,
-          email: credentials.email,
-          name: credentials.name || credentials.email
+          id: user.id,
+          email: user.email,
+          name: user.name
         }
       }
     })
@@ -26,6 +42,5 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/auth/signin"
-  },
-  debug: true // Debugging için
+  }
 }
