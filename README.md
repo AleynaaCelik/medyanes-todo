@@ -269,4 +269,5 @@ Bu proje, modern web development stack'ini öğrenme ve uygulama konusunda değe
 **Teknoloji Stack**: Next.js 15, TypeScript, MongoDB Atlas, Prisma, Zustand  
 **Durum**: Production Ready ✅
 #   F o r c e   d e p l o y   0 7 / 0 7 / 2 0 2 5   2 0 : 5 6 : 5 4  
+ #   F o r c e   d e p l o y   0 7 / 0 7 / 2 0 2 5   2 1 : 4 1 : 1 9  
  
