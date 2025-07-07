@@ -82,7 +82,7 @@ Bu proje, Medyanes firması için geliştirilmiş full stack bir todo uygulamas�
 - npm veya yarn
 - MongoDB Atlas hesabı
 
-### 1. Projeyi Klonlayın
+1. Projeyi Klonlayın
 ```bash
 git clone https://github.com/AleynaaCelik/medyanes-todo.git
 cd medyanes-todo
