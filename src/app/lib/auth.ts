@@ -4,14 +4,6 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { prisma } from "./prisma"
 import type { Adapter } from "next-auth/adapters"
 
-// Dinamik URL helper
-const getBaseUrl = () => {
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`
-  }
-  return 'http://localhost:3000'
-}
-
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
@@ -58,7 +50,7 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   session: {
-    strategy: "jwt" // PrismaAdapter ile "jwt" kullanmak önemli!
+    strategy: "jwt"
   },
   pages: {
     signIn: "/auth/signin"
@@ -66,7 +58,6 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
   
-  // Dinamik URL ayarlama
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -75,7 +66,7 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      if (token) {
+      if (token && session.user) {
         session.user.id = token.id as string
       }
       return session

@@ -6,7 +6,7 @@ import { todoSchema, TodoFormData } from '../lib/validations'
 import { useTodoStore } from '../store/todoStore'
 
 export default function AddTodoForm() {
-  const { addTodo, loading } = useTodoStore()
+  const { createTodo, loading } = useTodoStore()
   
   const {
     register,
@@ -18,9 +18,15 @@ export default function AddTodoForm() {
   })
 
   const onSubmit = async (data: TodoFormData) => {
-    await addTodo(data.title)
-    reset()
+    try {
+      await createTodo(data.title.trim())
+      reset() // Form'u temizle
+    } catch (error) {
+      console.error('Todo ekleme hatası:', error)
+    }
   }
+
+  const isLoading = loading || isSubmitting
 
   return (
     <div className="mb-8">
@@ -38,7 +44,7 @@ export default function AddTodoForm() {
                 {...register('title')}
                 type="text"
                 placeholder="Bugün ne yapacaksın?"
-                disabled={loading || isSubmitting}
+                disabled={isLoading}
                 className={`block w-full pl-10 pr-4 py-4 text-gray-900 bg-white border-2 rounded-xl focus:outline-none transition-all duration-200 disabled:bg-gray-50 ${
                   errors.title 
                     ? 'border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
@@ -50,10 +56,10 @@ export default function AddTodoForm() {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading || isSubmitting}
+              disabled={isLoading}
               className="ml-3 px-6 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-100 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none"
             >
-              {loading || isSubmitting ? (
+              {isLoading ? (
                 <div className="flex items-center">
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                   Ekliyor...
