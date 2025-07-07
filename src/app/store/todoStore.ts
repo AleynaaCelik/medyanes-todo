@@ -60,7 +60,7 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
       } else {
         set({ error: 'Todolar yüklenemedi', loading: false })
       }
-    } catch (_error) {
+    } catch {
       set({ error: 'Network hatası', loading: false })
     }
   },
@@ -83,7 +83,7 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
       } else {
         set({ error: 'Todo oluşturulamadı', loading: false })
       }
-    } catch (_error) {
+    } catch {
       set({ error: 'Network hatası', loading: false })
     }
   },
@@ -99,7 +99,7 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
       if (response.ok) {
         get().toggleTodo(id)
       }
-    } catch (_error) {
+    } catch {
       set({ error: 'Todo güncellenemedi' })
     }
   },
@@ -113,7 +113,7 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
       if (response.ok) {
         get().deleteTodo(id)
       }
-    } catch (_error) {
+    } catch {
       set({ error: 'Todo silinemedi' })
     }
   }
