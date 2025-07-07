@@ -14,12 +14,7 @@ export const authOptions: NextAuthOptions = {
         name: { label: "Name", type: "text" }
       },
       async authorize(credentials) {
-        console.log("🔐 Authorize çağrıldı:", credentials?.email)
-        
-        if (!credentials?.email) {
-          console.log("❌ Email eksik")
-          return null
-        }
+        if (!credentials?.email) return null
 
         try {
           let user = await prisma.user.findUnique({
@@ -27,7 +22,6 @@ export const authOptions: NextAuthOptions = {
           })
 
           if (!user) {
-            console.log("👤 Yeni kullanıcı oluşturuluyor...")
             user = await prisma.user.create({
               data: {
                 email: credentials.email,
@@ -36,14 +30,13 @@ export const authOptions: NextAuthOptions = {
             })
           }
 
-          console.log("✅ Kullanıcı doğrulandı:", user.email)
           return {
             id: user.id,
             email: user.email,
             name: user.name
           }
         } catch (error) {
-          console.error("❌ Database hatası:", error)
+          console.error("Auth error:", error)
           return null
         }
       }
@@ -56,8 +49,6 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/signin"
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === 'development',
-  
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
