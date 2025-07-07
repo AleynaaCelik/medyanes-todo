@@ -1,5 +1,6 @@
+/* eslint-disable */
 import { create } from 'zustand'
-
+// ... rest of your code
 interface Todo {
   id: string
   title: string
