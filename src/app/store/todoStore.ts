@@ -12,7 +12,7 @@ interface TodoStore {
   todos: Todo[]
   loading: boolean
   error: string | null
-  
+
   // Actions
   setTodos: (todos: Todo[]) => void
   addTodo: (todo: Todo) => void
@@ -20,7 +20,7 @@ interface TodoStore {
   deleteTodo: (id: string) => void
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
-  
+
   // API calls
   fetchTodos: () => Promise<void>
   createTodo: (title: string) => Promise<void>
@@ -36,14 +36,16 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
   // State setters
   setTodos: (todos) => set({ todos }),
   addTodo: (todo) => set((state) => ({ todos: [...state.todos, todo] })),
-  toggleTodo: (id) => set((state) => ({ 
-    todos: state.todos.map(todo => 
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
-    )
-  })),
-  deleteTodo: (id) => set((state) => ({ 
-    todos: state.todos.filter(todo => todo.id !== id) 
-  })),
+  toggleTodo: (id) =>
+    set((state) => ({
+      todos: state.todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    })),
+  deleteTodo: (id) =>
+    set((state) => ({
+      todos: state.todos.filter((todo) => todo.id !== id)
+    })),
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
 
@@ -58,7 +60,7 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
       } else {
         set({ error: 'Todolar yüklenemedi', loading: false })
       }
-    } catch (error) {
+    } catch (_error) {
       set({ error: 'Network hatası', loading: false })
     }
   },
@@ -71,17 +73,17 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title })
       })
-      
+
       if (response.ok) {
         const newTodo = await response.json()
-        set((state) => ({ 
-          todos: [...state.todos, newTodo], 
-          loading: false 
+        set((state) => ({
+          todos: [...state.todos, newTodo],
+          loading: false
         }))
       } else {
         set({ error: 'Todo oluşturulamadı', loading: false })
       }
-    } catch (error) {
+    } catch (_error) {
       set({ error: 'Network hatası', loading: false })
     }
   },
@@ -93,11 +95,11 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ completed })
       })
-      
+
       if (response.ok) {
         get().toggleTodo(id)
       }
-    } catch (error) {
+    } catch (_error) {
       set({ error: 'Todo güncellenemedi' })
     }
   },
@@ -107,11 +109,11 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
       const response = await fetch(`/api/todos/${id}`, {
         method: 'DELETE'
       })
-      
+
       if (response.ok) {
         get().deleteTodo(id)
       }
-    } catch (error) {
+    } catch (_error) {
       set({ error: 'Todo silinemedi' })
     }
   }

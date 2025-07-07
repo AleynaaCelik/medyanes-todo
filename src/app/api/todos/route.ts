@@ -1,21 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../../lib/auth'
+// import { getServerSession } from 'next-auth' // ← GEÇİCİ KAPALI
+// import { authOptions } from '../../lib/auth' // ← GEÇİCİ KAPALI
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions)
-    
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // GEÇİCİ: Session kontrolünü kapat
+    // const session = await getServerSession(authOptions)
+    // if (!session?.user?.email) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // }
 
-    // Şimdilik hardcoded todo'lar döndür
+    // Test todo'lar
     const todos = [
       {
         id: "1",
-        title: "Test Todo",
+        title: "Test Todo 1",
         completed: false,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: "2",
+        title: "Test Todo 2", 
+        completed: true,
         createdAt: new Date(),
         updatedAt: new Date()
       }
@@ -30,11 +37,11 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
-    
-    if (!session?.user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // GEÇİCİ: Session kontrolünü kapat
+    // const session = await getServerSession(authOptions)
+    // if (!session?.user?.email) {
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // }
 
     const { title } = await request.json()
     
@@ -42,7 +49,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Title gerekli' }, { status: 400 })
     }
 
-    // Başarılı response döndür
     const newTodo = {
       id: Date.now().toString(),
       title: title.trim(),
