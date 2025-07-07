@@ -2,14 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params // ← Bu satırı değiştirdik
     const { completed } = await request.json()
     
-    // Test response
     const updatedTodo = {
-      id: params.id,
+      id,
       completed,
       updatedAt: new Date()
     }
@@ -23,10 +23,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    return NextResponse.json({ message: 'Todo silindi', id: params.id })
+    const { id } = await context.params // ← Bu satırı değiştirdik
+    return NextResponse.json({ message: 'Todo silindi', id })
   } catch (error) {
     console.error('DELETE Error:', error)
     return NextResponse.json({ error: 'Todo silinemedi' }, { status: 500 })
