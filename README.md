@@ -9,7 +9,7 @@
 
 ## 🎯 Proje Hakkında
 
-Bu proje, Medyanes firması için geliştirilmiş full stack bir todo uygulamasıdır. Modern web teknolojileri kullanılarak, kullanıcıların görevlerini yönetebileceği, CRUD operasyonlarının gerçekleştirilebildiği responsive bir uygulama geliştirilmiştir.
+Bu proje, Medyanes firması için geliştirilmiş full stack bir todo uygulamasıdır. Modern web teknolojileri kullanılarak, kullanıcıların görevlerini yönetebileceği, CRUD operasyonlarının gerçekleştirilebildiği responsive bir uygulama geliştirilmiştir
 
 ## 📷 Screenshots
 
