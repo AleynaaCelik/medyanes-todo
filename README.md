@@ -1,6 +1,6 @@
 # 📝 Medyanes Todo App
 
-**Full Stack Todo Uygulaması** - Next.js 15, MongoDB Atlas, Prisma ve Zustand ile geliştirilmiş modern web uygulaması.
+**Full Stack Todo Uygulaması** - Next.js 15, MongoDB Atlas, Prisma ve Zustand ile geliştirilmiş modern web uygulaması
 
 ![Next.js](https://img.shields.io/badge/Next.js-15.3.5-black?style=for-the-badge&logo=next.js)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green?style=for-the-badge&logo=mongodb)
